@@ -4,30 +4,26 @@ from pydantic import BaseModel
 from loguru import logger
 import RPi.GPIO as GPIO
 
+PISTON_PIN = int(getenv('RUNTTA_PISTON_PIN', 17))
+STATUS_PIN = int(getenv('RUNTTA_STATUS_PIN', 27))
+TIMEOUT = int(getenv('RUNTTA_TIMEOUT', 3))
 
 class Raspi(BaseModel):
-    pin_in: int
-    pin_out: int
+    piston_pin: int
+    status_pin: int
 
     def init(self):
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.pin_in, GPIO.IN)
-        GPIO.setup(self.pin_out, GPIO.OUT)
-        GPIO.add_event_detect(self.pin_in, GPIO.RISING, callback=self.drawback)
+        GPIO.setup(self.piston_pin, GPIO.OUT)
+        GPIO.setup(self.status_pin, GPIO.OUT)
 
         return self
 
     async def trigger(self):
         logger.debug("Triggering")
-        GPIO.output(self.pin_out, GPIO.HIGH)
-        await asyncio.sleep(int(getenv('RUNTTA_TIMEOUT', 3)))
-        GPIO.output(self.pin_out, GPIO.LOW)
-
-    def drawback(self):
-        logger.debug("Drawback")
-        GPIO.output(self.pin_out, GPIO.LOW)
+        GPIO.output(self.piston_pint, GPIO.HIGH)
+        await asyncio.sleep(TIMEOUT)
+        GPIO.output(self.piston_pint, GPIO.LOW)
 
 
-raspi = Raspi(pin_in=19, pin_out=20).init()
-
-GPIO.cleanup()
+raspi = Raspi(piston_pin=PISTON_PIN, status_pin=STATUS_PIN).init()

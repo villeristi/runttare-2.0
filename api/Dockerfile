@@ -1,7 +1,7 @@
 # ------------------------------------------------------------
 # Base layer
 # ------------------------------------------------------------
-FROM python:3.9-slim as base
+FROM arm32v7/python:3.9-slim as base
 
 LABEL maintainer="Wille <villeristimaki@gmail.com>"
 
@@ -15,14 +15,7 @@ RUN apt-get update -y && apt-get install -y \
     libffi-dev \
     git
 
-# RUN apt-get remove -y rustc cargo
 RUN apt-get autoremove -y
-
-# ENV PATH="$HOME/.cargo/bin:$PATH"
-# RUN curl https://sh.rustup.rs -sSf | sh
-# # ENV PATH="/root/.cargo/bin:${PATH}"
-# RUN . $HOME/.cargo/env
-# RUN rustc -V
 
 RUN addgroup --system fastapi \
     && adduser --system --ingroup fastapi fastapi

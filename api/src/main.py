@@ -22,6 +22,7 @@ except (ImportError, RuntimeError):
 from .db import create_table
 from .websocket import websocketManager
 from .runtta import make_runtta
+from .raspi import GPIO
 
 app = FastAPI()
 app.add_middleware(
@@ -44,6 +45,7 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_events():
     logger.debug("Shutdown!")
+    GPIO.cleanup()
 
 
 # Don't nag about missing favicon
