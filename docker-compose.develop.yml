@@ -2,24 +2,18 @@ version: "3"
 services:
 
   api:
-    build:
-      context: ./node
-      target: production
     container_name: api
+    build:
+      context: ./api
+      target: development
     restart: on-failure
     privileged: true
     volumes:
-      - ./node:/usr/src/app
-      - ./runtta.db:/usr/src/app/dist/runtta.rb
-      - /usr/src/app/dist/
-      - /usr/src/app/node_modules/
+      - ./api:/app
     ports:
       - "8000:8000"
-    # volumes:
-    #   - /sys/devices/platform/soc/3f200000.gpio:/sys/devices/platform/soc/3f200000.gpio
-    #   - /sys/class/gpio:/sys/class/gpio
     environment:
-      - "RUNTTA_TIMEOUT=3000"
+      - "RUNTTA_TIMEOUT=3"
       - "RUNTTA_PISTON_PIN=17"
       - "RUNTTA_STATUS_PIN=27"
 
@@ -27,7 +21,7 @@ services:
     container_name: ui
     build:
       context: ./ui
-      target: production
+      target: development
       args:
         API_URL: http://runttare.local:8000/runtta
         BROKER_URL: ws://runttare.local:8000/ws
