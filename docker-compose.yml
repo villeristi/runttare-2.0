@@ -2,10 +2,10 @@ version: "3"
 services:
 
   api:
-    image: villeristi/runttare-api:latest
+    image: villeristi/runttare-api-python:latest
     container_name: api
     build:
-      context: ./node
+      context: ./api
       target: production
     restart: on-failure
     privileged: true
@@ -14,7 +14,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - "RUNTTA_TIMEOUT=3000"
+      - "RUNTTA_TIMEOUT=3"
       - "RUNTTA_PISTON_PIN=17"
       - "RUNTTA_STATUS_PIN=27"
 
